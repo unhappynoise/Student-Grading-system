@@ -8,7 +8,7 @@ def main():
         print("Welcome! to your Gradebook app."
               "\n 1.View student grades \n 2.Add student grade \n 3.Update student grade \n 4.View Average grades"
               "\n 5.Search for student \n 6.Delete student \n \n 7.See highest scoring student "
-              "\n 8.See lowest scoring student \n 9.Quit")
+              "\n 8.See lowest scoring student \n 9.Get class report \n 10.Quit")
         option = int(input('>'))
         if option == 1:
             time.sleep(1)
@@ -74,6 +74,9 @@ def main():
             marks.lowest()
 
         elif option == 9:
+            marks.generate_report()
+
+        elif option == 10:
             break
 
 
