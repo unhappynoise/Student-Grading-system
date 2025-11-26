@@ -1,6 +1,7 @@
 import json
 import os.path
 
+from unicodedata import category
 
 
 class Grade:
@@ -40,7 +41,8 @@ class Grade:
             arranged = sorted(self.students.items(), key=lambda x: x[1], reverse=True)
 
             for student, grade in arranged:
-                print(f"{student} : {grade}")
+                category = self.get_category()
+                print(f"{student} : {grade} ({category})")
 
     def update_grade(self, name, new_grade):
         if name in self.students:
@@ -51,11 +53,13 @@ class Grade:
             print(f"{name} not found.")
 
     def search(self, query):
+        query = query.lower
         found = False
 
-        if query in self.students:
-            print(f"{query}: {self.students[query]}")
-            found = True
+        for student, grade in self.students.items():
+            if query in student.lower:
+                print(f"{student}: {grade}")
+                found = True
 
         if not found:
             print("There's no name as such here.")
@@ -66,3 +70,70 @@ class Grade:
 
         average = total / count
         print(f"The class average is: {average:.2f}")
+
+    def delete_student(self, name):
+        if name in self.students:
+            del self.students[name]
+            self.save_grade()
+            print(f"{name} has been removed from the gradebook.")
+        else:
+            print(f"{name} not found.")
+
+    def get_category(self, grade):
+        if grade >= 80:
+            return "A"
+        elif grade >= 70:
+            return "B"
+        elif grade >= 60:
+            return "C"
+        elif grade >= 50:
+            return "D"
+        else:
+            return "F"
+
+    def top_student(self):
+        if not self.students:
+            print("No grade records yet.")
+            return
+
+        top = max(self.students.items(), key=lambda x: x[1])
+        print(f"Top student: {top[0]} with {top[1]}")
+
+    def lowest(self):
+        if not self.students:
+            print("No grade records yet.")
+            return
+
+        low = min(self.students.items(), key=lambda x: x[1])
+        print(f"Lowest Student: {low[0]} with {low[1]}")
+
+    def generate_report(self):
+        if not self.students:
+            print("No grade records to generate report.")
+            return
+
+        arranged = sorted(self.students.items(), key=lambda x: x[1], reverse=True)
+
+        with open("class_report.txt", "w") as file:
+            file.write("===== CLASS REPORT =====\n")
+            file.write("\n")
+
+            file.write("Student Grades (High --> Low):\n")
+            for name, grade in arranged:
+                category = self.get_category(grade)
+                file.write(f"{name} : {grade} ({category})\n")
+
+            file.write("\n")
+
+            avg = sum(self.students.values()) / len(self.students)
+            file.write(f"Class Average: {avg:.2f}\n")
+
+            top = max(self.students.items(), key=lambda x: x[1])
+            file.write(f"Top Student: {top[0]} ({top[1]})\n")
+
+            low = min(self.students.items(), key=lambda x: x[1])
+            file.write(f"Lowest Student: {low[0]} ({low[1]})\n")
+
+            file.write("\nReport Generated Successfully.\n")
+
+        print("Class report saved as 'class_report.txt'.")

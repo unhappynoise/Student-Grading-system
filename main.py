@@ -7,7 +7,8 @@ def main():
     while True:
         print("Welcome! to your Gradebook app."
               "\n 1.View student grades \n 2.Add student grade \n 3.Update student grade \n 4.View Average grades"
-              "\n 5.Search for student \n 6.Quit")
+              "\n 5.Search for student \n 6.Delete student \n \n 7.See highest scoring student "
+              "\n 8.See lowest scoring student \n 9.Quit")
         option = int(input('>'))
         if option == 1:
             time.sleep(1)
@@ -55,6 +56,24 @@ def main():
             marks.search(query)
 
         elif option == 6:
+            marks.view_grades()
+            print("Enter the name of the student to delete:")
+            NM = input('>').strip()
+            print(f"Are you sure you want to delete {NM}? (Y/N)")
+            confirm = input('>').lower()
+
+            if confirm == 'y':
+                marks.delete_student(NM)
+            else:
+                print("Deletion cancelled.")
+
+        elif option == 7:
+            marks.top_student()
+
+        elif option == 8:
+            marks.lowest()
+
+        elif option == 9:
             break
 
 
